@@ -113,7 +113,7 @@
 <script>
 const GOAL = 10000;
 const DEADLINE = new Date('2026-12-31T23:59:59');
-const API = 'https://jsonblob.com/api/jsonBlob';
+const STORAGE_URL = 'https://api.npoint.io/920215a7259465178583';
 
 const QUICK_PRESETS = [
   {emoji:'📝', label:'Пятёрка · контрольная', amount:50, type:'grade'},
@@ -125,66 +125,46 @@ const QUICK_PRESETS = [
 const READING_RATE = 10;
 
 let entries = [];
-let blobId = null;
 let formType = 'grade';
-let justCreated = false;
-
-function getParam(name){
-  return new URLSearchParams(window.location.search).get(name);
-}
+let storageError = false;
 
 async function initStorage(){
-  blobId = getParam('b');
-  if(blobId){
-    try{
-      const res = await fetch(`${API}/${blobId}`);
-      if(res.ok){
-        const data = await res.json();
-        entries = data.entries || [];
-        return;
-      }
-    }catch(e){ /* fall through to create new */ }
-  }
-  // нет id или он не найден — создаём новую общую копилку
   try{
-    const res = await fetch(API, {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({entries: []})
-    });
-    const location = res.headers.get('Location') || '';
-    blobId = location.split('/').pop();
-    entries = [];
-    justCreated = true;
-    const url = new URL(window.location.href);
-    url.searchParams.set('b', blobId);
-    window.history.replaceState({}, '', url.toString());
+    const res = await fetch(STORAGE_URL);
+    if(res.ok){
+      const data = await res.json();
+      entries = data.entries || [];
+      storageError = false;
+      return;
+    }
+    storageError = true;
   }catch(e){
-    console.error('Не удалось создать общую копилку', e);
-    entries = [];
+    console.error('Не удалось загрузить копилку', e);
+    storageError = true;
   }
 }
 
 async function saveEntries(){
-  if(!blobId) return;
   try{
-    await fetch(`${API}/${blobId}`, {
-      method:'PUT',
+    const res = await fetch(STORAGE_URL, {
+      method:'POST',
       headers:{'Content-Type':'application/json'},
       body: JSON.stringify({entries})
     });
+    storageError = !res.ok;
   }catch(e){
     console.error('Не удалось сохранить', e);
+    storageError = true;
   }
 }
 
 async function reloadEntries(){
-  if(!blobId) return;
   try{
-    const res = await fetch(`${API}/${blobId}`);
+    const res = await fetch(STORAGE_URL);
     if(res.ok){
       const data = await res.json();
       entries = data.entries || [];
+      storageError = false;
     }
   }catch(e){ /* тихо игнорируем — попробуем в следующий раз */ }
 }
@@ -245,18 +225,13 @@ function render(){
     });
   }
 
-  const shareUrl = window.location.href;
-  const shareHtml = justCreated ? `
-    <div class="share-banner">
-      <b>Копилка создана!</b> Отправьте эту же ссылку мужу — тогда вы оба будете видеть одну копилку.
-      <div class="share-row">
-        <input type="text" id="shareUrlInput" readonly value="${shareUrl}">
-        <button id="copyShareUrl">Скопировать</button>
-      </div>
+  const errorHtml = storageError ? `
+    <div class="share-banner" style="border-color:var(--danger);">
+      <b>Не получилось сохранить/загрузить данные.</b> Проверьте интернет-соединение и попробуйте ещё раз — если повторится, пришлите скриншот этого сообщения.
     </div>` : '';
 
   document.getElementById('app').innerHTML = `
-    ${shareHtml}
+    ${errorHtml}
     <div class="hero">
       <div class="hero-title">Полёт к Новому году 🚀</div>
       <div class="hero-sub">Цель — ${fmt(GOAL)} ₽ до 31 декабря · копилка общая</div>
@@ -324,13 +299,6 @@ function render(){
       await saveEntries(); render();
     });
   });
-  if(document.getElementById('copyShareUrl')){
-    document.getElementById('copyShareUrl').addEventListener('click', ()=>{
-      const input = document.getElementById('shareUrlInput');
-      input.select();
-      navigator.clipboard?.writeText(input.value);
-    });
-  }
   document.getElementById('toggleCustom').addEventListener('click', ()=> document.getElementById('customForm').classList.toggle('open'));
   document.getElementById('typeGrade').addEventListener('click', ()=>{ formType='grade'; render(); document.getElementById('customForm').classList.add('open'); });
   document.getElementById('typeChore').addEventListener('click', ()=>{ formType='chore'; render(); document.getElementById('customForm').classList.add('open'); });
