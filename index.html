@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Копилка">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0b0f2a">
+<title>Копилка · Полёт к Новому году</title>
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230b0f2a'/%3E%3Ctext x='50' y='66' font-size='55' text-anchor='middle'%3E%F0%9F%9A%80%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-deep:#0b0f2a; --bg-panel:#141a3d; --bg-panel-2:#1b2350; --line:#2a3268;
+    --gold:#f4b942; --gold-dim:#8a6b2a; --coral:#ff7a6e; --teal:#4fd8cc; --lav:#b98bff;
+    --text:#f2f1ea; --text-muted:#9aa2d1; --danger:#ff6b6b;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0; background:#0b0f2a; -webkit-tap-highlight-color:transparent; overscroll-behavior:none;}
+  #app{
+    font-family:'Nunito',sans-serif;
+    background:
+      radial-gradient(1px 1px at 10% 20%, #ffffff55 0, transparent 50%),
+      radial-gradient(1px 1px at 80% 10%, #ffffff44 0, transparent 50%),
+      radial-gradient(1.5px 1.5px at 60% 70%, #ffffff33 0, transparent 50%),
+      radial-gradient(1px 1px at 30% 85%, #ffffff40 0, transparent 50%),
+      radial-gradient(1px 1px at 90% 60%, #ffffff33 0, transparent 50%),
+      radial-gradient(1px 1px at 45% 40%, #ffffff2a 0, transparent 50%),
+      linear-gradient(160deg, var(--bg-deep) 0%, #10143a 60%, #191046 100%);
+    color:var(--text); min-height:100vh; padding:20px 14px 40px; max-width:640px; margin:0 auto;
+  }
+  h1,h2,h3{font-family:'Baloo 2',sans-serif; margin:0;}
+  .share-banner{
+    background:linear-gradient(135deg, #2a2060, #1b2350);
+    border:1px solid var(--gold-dim);
+    border-radius:16px;
+    padding:12px 14px;
+    margin-bottom:14px;
+    font-size:13px;
+    color:var(--text);
+  }
+  .share-banner b{color:var(--gold);}
+  .share-row{display:flex; gap:8px; margin-top:8px;}
+  .share-row input{
+    flex:1; background:var(--bg-deep); border:1px solid var(--line); border-radius:8px;
+    color:var(--text-muted); font-size:11.5px; padding:8px; font-family:monospace;
+  }
+  .share-row button{
+    background:var(--gold); color:#3a2a06; border:none; border-radius:8px; padding:8px 12px;
+    font-weight:700; font-size:12.5px; cursor:pointer; flex-shrink:0;
+  }
+  .hero{background:linear-gradient(180deg, var(--bg-panel-2) 0%, var(--bg-panel) 100%); border:1px solid var(--line); border-radius:26px; padding:22px 20px 20px; margin-bottom:16px;}
+  .hero-title{font-size:22px; font-weight:700; color:var(--text); line-height:1.25;}
+  .hero-sub{font-size:14px; color:var(--text-muted); margin-top:4px;}
+  .track-wrap{margin:22px 0 8px; position:relative;}
+  .track{height:14px; background:var(--bg-deep); border:1px solid var(--line); border-radius:99px; position:relative;}
+  .track-fill{height:100%; border-radius:99px; background:linear-gradient(90deg, var(--coral), var(--gold)); width:0%; transition:width .6s ease;}
+  .rocket{position:absolute; top:50%; transform:translate(-50%,-50%); font-size:22px; left:0%; transition:left .6s ease;}
+  .goal-flag{position:absolute; right:-6px; top:50%; transform:translateY(-50%); font-size:20px;}
+  .stat-row{display:flex; justify-content:space-between; margin-top:22px; gap:10px;}
+  .stat{flex:1; text-align:center;}
+  .stat-num{font-family:'Baloo 2',sans-serif; font-size:20px; font-weight:700;}
+  .stat-num.gold{color:var(--gold);} .stat-num.teal{color:var(--teal);} .stat-num.coral{color:var(--coral);}
+  .stat-label{font-size:11.5px; color:var(--text-muted); margin-top:2px;}
+  .section-title{font-size:15px; color:var(--text-muted); font-weight:700; margin:22px 0 10px 2px;}
+  .quick-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+  .quick-btn{background:var(--bg-panel); border:1px solid var(--line); border-radius:16px; padding:12px; text-align:left; color:var(--text); cursor:pointer; font-family:'Nunito',sans-serif; display:flex; align-items:center; gap:10px;}
+  .quick-btn:active{transform:scale(0.97);}
+  .quick-emoji{font-size:22px; flex-shrink:0;}
+  .quick-text{flex:1; min-width:0;}
+  .quick-label{font-size:13px; font-weight:600; line-height:1.2;}
+  .quick-amount{font-size:12.5px; color:var(--gold); font-weight:700; margin-top:1px;}
+  .custom-toggle{width:100%; background:transparent; border:1.5px dashed var(--line); border-radius:16px; padding:12px; color:var(--text-muted); font-family:'Nunito',sans-serif; font-weight:700; font-size:13.5px; cursor:pointer; margin-top:10px;}
+  .custom-form{background:var(--bg-panel); border:1px solid var(--line); border-radius:18px; padding:14px; margin-top:10px; display:none;}
+  .custom-form.open{display:block;}
+  .form-row{display:flex; gap:8px; margin-bottom:8px;}
+  .type-toggle{display:flex; gap:8px; margin-bottom:10px;}
+  .type-opt{flex:1; text-align:center; padding:8px; border-radius:12px; border:1px solid var(--line); font-size:13px; font-weight:700; cursor:pointer; color:var(--text-muted);}
+  .type-opt.active-grade{background:var(--coral); color:#2a0f0c; border-color:var(--coral);}
+  .type-opt.active-chore{background:var(--teal); color:#08302c; border-color:var(--teal);}
+  .type-opt.active-reading{background:var(--lav); color:#1e1030; border-color:var(--lav);}
+  input[type=text], input[type=number], input[type=date]{width:100%; background:var(--bg-deep); border:1px solid var(--line); border-radius:10px; padding:9px 10px; color:var(--text); font-family:'Nunito',sans-serif; font-size:13.5px;}
+  input::placeholder{color:#6b73a8;}
+  .field{flex:1;}
+  .field-label{font-size:11px; color:var(--text-muted); margin-bottom:3px; font-weight:600;}
+  .submit-btn{width:100%; background:var(--gold); color:#3a2a06; border:none; border-radius:12px; padding:11px; font-family:'Baloo 2',sans-serif; font-weight:700; font-size:14.5px; cursor:pointer; margin-top:4px;}
+  .reading-box{background:var(--bg-panel); border:1px solid var(--line); border-radius:16px; padding:12px; display:flex; align-items:flex-end; gap:8px; margin-bottom:4px;}
+  .reading-preview{font-size:12px; color:var(--lav); font-weight:700; white-space:nowrap; padding-bottom:10px; margin-bottom:10px;}
+  .reading-add-btn{background:var(--lav); color:#1e1030; border:none; border-radius:10px; padding:9px 14px; font-family:'Baloo 2',sans-serif; font-weight:700; font-size:13.5px; cursor:pointer; flex-shrink:0;}
+  .week-group{margin-bottom:14px;}
+  .week-header{display:flex; justify-content:space-between; font-size:12.5px; color:var(--text-muted); padding:0 4px 6px; font-weight:700;}
+  .entry{background:var(--bg-panel); border:1px solid var(--line); border-radius:14px; padding:10px 12px; display:flex; align-items:center; gap:10px; margin-bottom:6px;}
+  .entry-emoji{font-size:18px; width:22px; text-align:center; flex-shrink:0;}
+  .entry-body{flex:1; min-width:0;}
+  .entry-desc{font-size:13.5px; font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .entry-date{font-size:11px; color:var(--text-muted);}
+  .entry-amount{font-weight:700; font-size:14px; flex-shrink:0;}
+  .entry-amount.grade{color:var(--coral);} .entry-amount.chore{color:var(--teal);} .entry-amount.reading{color:var(--lav);}
+  .entry-del{background:none; border:none; color:#5b6296; font-size:16px; cursor:pointer; padding:2px 4px; flex-shrink:0;}
+  .empty-state{text-align:center; color:var(--text-muted); font-size:13.5px; padding:24px 10px; background:var(--bg-panel); border-radius:16px; border:1px dashed var(--line);}
+  .footer-row{display:flex; justify-content:center; margin-top:18px;}
+  .reset-link{background:none; border:none; color:#5b6296; font-size:12px; cursor:pointer; text-decoration:underline;}
+  .loading{text-align:center; color:var(--text-muted); padding:40px 20px; font-size:13.5px;}
+</style>
+</head>
+<body>
+<div id="app"><div class="loading">Загружаем копилку…</div></div>
+
+<script>
+const GOAL = 10000;
+const DEADLINE = new Date('2026-12-31T23:59:59');
+const API = 'https://jsonblob.com/api/jsonBlob';
+
+const QUICK_PRESETS = [
+  {emoji:'📝', label:'Пятёрка · контрольная', amount:50, type:'grade'},
+  {emoji:'✏️', label:'Пятёрка · обычная', amount:25, type:'grade'},
+  {emoji:'🍽️', label:'Помыл посуду', amount:30, type:'chore'},
+  {emoji:'🧹', label:'Уборка комнаты', amount:40, type:'chore'},
+  {emoji:'🗑️', label:'Вынес мусор', amount:20, type:'chore'},
+];
+const READING_RATE = 10;
+
+let entries = [];
+let blobId = null;
+let formType = 'grade';
+let justCreated = false;
+
+function getParam(name){
+  return new URLSearchParams(window.location.search).get(name);
+}
+
+async function initStorage(){
+  blobId = getParam('b');
+  if(blobId){
+    try{
+      const res = await fetch(`${API}/${blobId}`);
+      if(res.ok){
+        const data = await res.json();
+        entries = data.entries || [];
+        return;
+      }
+    }catch(e){ /* fall through to create new */ }
+  }
+  // нет id или он не найден — создаём новую общую копилку
+  try{
+    const res = await fetch(API, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({entries: []})
+    });
+    const location = res.headers.get('Location') || '';
+    blobId = location.split('/').pop();
+    entries = [];
+    justCreated = true;
+    const url = new URL(window.location.href);
+    url.searchParams.set('b', blobId);
+    window.history.replaceState({}, '', url.toString());
+  }catch(e){
+    console.error('Не удалось создать общую копилку', e);
+    entries = [];
+  }
+}
+
+async function saveEntries(){
+  if(!blobId) return;
+  try{
+    await fetch(`${API}/${blobId}`, {
+      method:'PUT',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({entries})
+    });
+  }catch(e){
+    console.error('Не удалось сохранить', e);
+  }
+}
+
+async function reloadEntries(){
+  if(!blobId) return;
+  try{
+    const res = await fetch(`${API}/${blobId}`);
+    if(res.ok){
+      const data = await res.json();
+      entries = data.entries || [];
+    }
+  }catch(e){ /* тихо игнорируем — попробуем в следующий раз */ }
+}
+
+function fmt(n){ return n.toLocaleString('ru-RU'); }
+
+function getWeekLabel(dateStr){
+  const d = new Date(dateStr);
+  const day = d.getDay() === 0 ? 7 : d.getDay();
+  const monday = new Date(d); monday.setDate(d.getDate() - day + 1);
+  const sunday = new Date(monday); sunday.setDate(monday.getDate()+6);
+  const opts = {day:'numeric', month:'short'};
+  return monday.toLocaleDateString('ru-RU', opts) + ' – ' + sunday.toLocaleDateString('ru-RU', opts);
+}
+function weekKey(dateStr){
+  const d = new Date(dateStr);
+  const day = d.getDay() === 0 ? 7 : d.getDay();
+  const monday = new Date(d); monday.setDate(d.getDate() - day + 1);
+  return monday.toISOString().slice(0,10);
+}
+
+function render(){
+  const total = entries.reduce((s,e)=>s+e.amount,0);
+  const pct = Math.min(100, Math.round((total/GOAL)*100));
+  const now = new Date();
+  const daysLeft = Math.max(0, Math.ceil((DEADLINE-now)/(1000*60*60*24)));
+  const weeksLeft = Math.max(1, Math.ceil(daysLeft/7));
+  const remaining = Math.max(0, GOAL-total);
+  const perWeekNeeded = Math.ceil(remaining/weeksLeft);
+  const gradesTotal = entries.filter(e=>e.type==='grade').reduce((s,e)=>s+e.amount,0);
+  const choresTotal = entries.filter(e=>e.type==='chore').reduce((s,e)=>s+e.amount,0);
+  const readingTotal = entries.filter(e=>e.type==='reading').reduce((s,e)=>s+e.amount,0);
+
+  const groups = {};
+  entries.forEach(e=>{ const k=weekKey(e.date); (groups[k]=groups[k]||[]).push(e); });
+  const sortedWeeks = Object.keys(groups).sort().reverse();
+
+  let historyHtml = '';
+  if(entries.length===0){
+    historyHtml = `<div class="empty-state">Пока пусто. Добавь первую пятёрку или дело — и ракета полетит! 🚀</div>`;
+  } else {
+    sortedWeeks.forEach(wk=>{
+      const items = groups[wk].slice().sort((a,b)=> new Date(b.date)-new Date(a.date));
+      const subtotal = items.reduce((s,e)=>s+e.amount,0);
+      historyHtml += `<div class="week-group">
+        <div class="week-header"><span>${getWeekLabel(wk)}</span><span>+${fmt(subtotal)} ₽</span></div>
+        ${items.map(e=>`
+          <div class="entry">
+            <div class="entry-emoji">${e.type==='grade'?'⭐':e.type==='reading'?'📖':'🧺'}</div>
+            <div class="entry-body">
+              <div class="entry-desc">${e.desc}</div>
+              <div class="entry-date">${new Date(e.date).toLocaleDateString('ru-RU',{day:'numeric',month:'short'})}</div>
+            </div>
+            <div class="entry-amount ${e.type}">+${fmt(e.amount)} ₽</div>
+            <button class="entry-del" data-id="${e.id}">✕</button>
+          </div>`).join('')}
+      </div>`;
+    });
+  }
+
+  const shareUrl = window.location.href;
+  const shareHtml = justCreated ? `
+    <div class="share-banner">
+      <b>Копилка создана!</b> Отправьте эту же ссылку мужу — тогда вы оба будете видеть одну копилку.
+      <div class="share-row">
+        <input type="text" id="shareUrlInput" readonly value="${shareUrl}">
+        <button id="copyShareUrl">Скопировать</button>
+      </div>
+    </div>` : '';
+
+  document.getElementById('app').innerHTML = `
+    ${shareHtml}
+    <div class="hero">
+      <div class="hero-title">Полёт к Новому году 🚀</div>
+      <div class="hero-sub">Цель — ${fmt(GOAL)} ₽ до 31 декабря · копилка общая</div>
+      <div class="track-wrap">
+        <div class="track">
+          <div class="track-fill" style="width:${pct}%"></div>
+          <div class="rocket" style="left:${pct}%">🚀</div>
+          <div class="goal-flag">🏁</div>
+        </div>
+      </div>
+      <div class="stat-row">
+        <div class="stat"><div class="stat-num gold">${fmt(total)} ₽</div><div class="stat-label">накоплено</div></div>
+        <div class="stat"><div class="stat-num">${fmt(remaining)} ₽</div><div class="stat-label">осталось</div></div>
+        <div class="stat"><div class="stat-num">${daysLeft}</div><div class="stat-label">дней до цели</div></div>
+      </div>
+      <div class="stat-row">
+        <div class="stat"><div class="stat-num coral">${fmt(gradesTotal)} ₽</div><div class="stat-label">за оценки</div></div>
+        <div class="stat"><div class="stat-num teal">${fmt(choresTotal)} ₽</div><div class="stat-label">за дела</div></div>
+        <div class="stat"><div class="stat-num" style="color:var(--lav)">${fmt(readingTotal)} ₽</div><div class="stat-label">за чтение</div></div>
+      </div>
+      <div class="stat-row"><div class="stat" style="flex:1"><div class="stat-num">${remaining>0?fmt(perWeekNeeded)+' ₽':'🎉'}</div><div class="stat-label">${remaining>0?'нужно в неделю, чтобы успеть':'цель достигнута'}</div></div></div>
+    </div>
+
+    <div class="section-title">Быстро добавить</div>
+    <div class="quick-grid">
+      ${QUICK_PRESETS.map((p,i)=>`
+        <button class="quick-btn" data-preset="${i}">
+          <div class="quick-emoji">${p.emoji}</div>
+          <div class="quick-text"><div class="quick-label">${p.label}</div><div class="quick-amount">+${p.amount} ₽</div></div>
+        </button>`).join('')}
+    </div>
+
+    <div class="section-title">Чтение книг · ${READING_RATE} ₽/страница</div>
+    <div class="reading-box">
+      <div class="field" style="flex:1"><div class="field-label">Название (необязательно)</div><input type="text" id="bookTitle" placeholder="какая книга"></div>
+      <div class="field" style="max-width:80px"><div class="field-label">Страниц</div><input type="number" id="bookPages" min="1" placeholder="20"></div>
+      <button class="reading-add-btn" id="addReading">Записать</button>
+    </div>
+    <div id="readingPreview" class="reading-preview"></div>
+
+    <button class="custom-toggle" id="toggleCustom">+ Своя запись</button>
+    <div class="custom-form" id="customForm">
+      <div class="type-toggle">
+        <div class="type-opt ${formType==='grade'?'active-grade':''}" id="typeGrade">⭐ Оценка</div>
+        <div class="type-opt ${formType==='chore'?'active-chore':''}" id="typeChore">🧺 Дело</div>
+        <div class="type-opt ${formType==='reading'?'active-reading':''}" id="typeReading">📖 Чтение</div>
+      </div>
+      <div class="form-row"><div class="field"><div class="field-label">Что именно</div><input type="text" id="descInput" placeholder="например, пятёрка по чтению"></div></div>
+      <div class="form-row">
+        <div class="field"><div class="field-label">Сумма, ₽</div><input type="number" id="amountInput" placeholder="30" min="1"></div>
+        <div class="field"><div class="field-label">Дата</div><input type="date" id="dateInput" value="${new Date().toISOString().slice(0,10)}"></div>
+      </div>
+      <button class="submit-btn" id="addCustom">Добавить в копилку</button>
+    </div>
+
+    <div class="section-title">История</div>
+    ${historyHtml}
+    <div class="footer-row"><button class="reset-link" id="resetAll">Очистить всю копилку</button></div>
+  `;
+
+  document.querySelectorAll('.quick-btn').forEach(btn=>{
+    btn.addEventListener('click', async ()=>{
+      const p = QUICK_PRESETS[btn.dataset.preset];
+      entries.push({id:Date.now()+Math.random(), desc:p.label, amount:p.amount, type:p.type, date:new Date().toISOString().slice(0,10)});
+      await saveEntries(); render();
+    });
+  });
+  if(document.getElementById('copyShareUrl')){
+    document.getElementById('copyShareUrl').addEventListener('click', ()=>{
+      const input = document.getElementById('shareUrlInput');
+      input.select();
+      navigator.clipboard?.writeText(input.value);
+    });
+  }
+  document.getElementById('toggleCustom').addEventListener('click', ()=> document.getElementById('customForm').classList.toggle('open'));
+  document.getElementById('typeGrade').addEventListener('click', ()=>{ formType='grade'; render(); document.getElementById('customForm').classList.add('open'); });
+  document.getElementById('typeChore').addEventListener('click', ()=>{ formType='chore'; render(); document.getElementById('customForm').classList.add('open'); });
+  document.getElementById('typeReading').addEventListener('click', ()=>{ formType='reading'; render(); document.getElementById('customForm').classList.add('open'); });
+
+  const pagesInput = document.getElementById('bookPages');
+  const previewEl = document.getElementById('readingPreview');
+  const updatePreview = ()=>{ const p=parseFloat(pagesInput.value); previewEl.textContent = p>0?`= ${fmt(p*READING_RATE)} ₽`:''; };
+  pagesInput.addEventListener('input', updatePreview); updatePreview();
+
+  document.getElementById('addReading').addEventListener('click', async ()=>{
+    const pages = parseFloat(pagesInput.value);
+    if(!pages || pages<=0){ alert('Укажи, сколько страниц прочитано.'); return; }
+    const title = document.getElementById('bookTitle').value.trim();
+    const desc = title ? `«${title}» · ${pages} стр.` : `Прочитано ${pages} стр.`;
+    entries.push({id:Date.now()+Math.random(), desc, amount:pages*READING_RATE, type:'reading', date:new Date().toISOString().slice(0,10)});
+    await saveEntries(); render();
+  });
+
+  document.getElementById('addCustom').addEventListener('click', async ()=>{
+    const desc = document.getElementById('descInput').value.trim();
+    const amount = parseFloat(document.getElementById('amountInput').value);
+    const date = document.getElementById('dateInput').value || new Date().toISOString().slice(0,10);
+    if(!desc || !amount || amount<=0){ alert('Укажи, за что и сколько рублей.'); return; }
+    entries.push({id:Date.now()+Math.random(), desc, amount, type:formType, date});
+    await saveEntries(); formType='grade'; render();
+  });
+
+  document.querySelectorAll('.entry-del').forEach(btn=>{
+    btn.addEventListener('click', async ()=>{
+      entries = entries.filter(e=> String(e.id) !== String(btn.dataset.id));
+      await saveEntries(); render();
+    });
+  });
+
+  document.getElementById('resetAll').addEventListener('click', async ()=>{
+    if(confirm('Удалить все записи из копилки? Это нельзя отменить.')){
+      entries = []; await saveEntries(); render();
+    }
+  });
+}
+
+(async ()=>{
+  await initStorage();
+  render();
+  setInterval(async ()=>{ await reloadEntries(); render(); }, 20000);
+  document.addEventListener('visibilitychange', async ()=>{
+    if(!document.hidden){ await reloadEntries(); render(); }
+  });
+})();
+</script>
+</body>
+</html>
